@@ -36,11 +36,11 @@ void Parser::D1() { // D1 -->  {D ;}
 
 void Parser::D() {
 	type_of_lex c_type_tmp;
-	if (c_type == LEX_INT || c_type == LEX_BOOL || c_type == LEX_STRING || c_type == LEX_REAL) { //нужно будет добавить тип string, real
+	if (c_type == LEX_INT || c_type == LEX_BOOL || c_type == LEX_STRING || c_type == LEX_REAL) { //РЅСѓР¶РЅРѕ Р±СѓРґРµС‚ РґРѕР±Р°РІРёС‚СЊ С‚РёРї string, real
 		c_type_tmp = c_type;
 		st_types.push(c_type);
 		gl();
-		//на этапе семинтического анализа будем дописывать здесь код
+		//РЅР° СЌС‚Р°РїРµ СЃРµРјРёРЅС‚РёС‡РµСЃРєРѕРіРѕ Р°РЅР°Р»РёР·Р° Р±СѓРґРµРј РґРѕРїРёСЃС‹РІР°С‚СЊ Р·РґРµСЃСЊ РєРѕРґ
 	}
 	else
 		throw "unadmittable type (expected int, real, bool, or string)";
@@ -49,7 +49,7 @@ void Parser::D() {
 		gl();
 		V();
 	}
-	st_types.pop(); //забрали из стека начальный тип перед перечислением переменных
+	st_types.pop(); //Р·Р°Р±СЂР°Р»Рё РёР· СЃС‚РµРєР° РЅР°С‡Р°Р»СЊРЅС‹Р№ С‚РёРї РїРµСЂРµРґ РїРµСЂРµС‡РёСЃР»РµРЅРёРµРј РїРµСЂРµРјРµРЅРЅС‹С…
 	dec(c_type_tmp);
 };
 
@@ -61,7 +61,7 @@ void Parser::V() {
 		if (c_type == LEX_EQ) {
 			gl();
 			C();
-			//проверить приравнимаемые типы C и T
+			//РїСЂРѕРІРµСЂРёС‚СЊ РїСЂРёСЂР°РІРЅРёРјР°РµРјС‹Рµ С‚РёРїС‹ C Рё T
 			eq_type_v(); 
 			poliz.push_back(Lex(LEX_ASSIGN));
 
@@ -73,7 +73,7 @@ void Parser::V() {
 
 void Parser::C() {
 	if (c_type == LEX_PLUS || c_type == LEX_MINUS) {
-		//перед склдыванием в полиз для случая с минусом поменять у числа значение на минус, достав его из стека
+		//РїРµСЂРµРґ СЃРєР»РґС‹РІР°РЅРёРµРј РІ РїРѕР»РёР· РґР»СЏ СЃР»СѓС‡Р°СЏ СЃ РјРёРЅСѓСЃРѕРј РїРѕРјРµРЅСЏС‚СЊ Сѓ С‡РёСЃР»Р° Р·РЅР°С‡РµРЅРёРµ РЅР° РјРёРЅСѓСЃ, РґРѕСЃС‚Р°РІ РµРіРѕ РёР· СЃС‚РµРєР°
 		type_of_lex c_type_tmp = c_type;
 		gl();
 		if (c_type == LEX_INT) {
@@ -153,7 +153,7 @@ void Parser::S1() {
 void Parser::S() {
 	int pl0, pl1, pl2, pl3;
 	if (c_type == LEX_ID) { //I()
-		//check_id проверяет, что тип переменной задекларирован, далее мы выполним присваивание значения переменной
+		//check_id РїСЂРѕРІРµСЂСЏРµС‚, С‡С‚Рѕ С‚РёРї РїРµСЂРµРјРµРЅРЅРѕР№ Р·Р°РґРµРєР»Р°СЂРёСЂРѕРІР°РЅ, РґР°Р»РµРµ РјС‹ РІС‹РїРѕР»РЅРёРј РїСЂРёСЃРІР°РёРІР°РЅРёРµ Р·РЅР°С‡РµРЅРёСЏ РїРµСЂРµРјРµРЅРЅРѕР№
 		check_id();
 		poliz.push_back(Lex(POLIZ_ADDRESS, c_val));
 		gl();
@@ -162,7 +162,7 @@ void Parser::S() {
 			AE();
 			eq_type();
 
-			//проверяем на ; после оператора присваивания
+			//РїСЂРѕРІРµСЂСЏРµРј РЅР° ; РїРѕСЃР»Рµ РѕРїРµСЂР°С‚РѕСЂР° РїСЂРёСЃРІР°РёРІР°РЅРёСЏ
 			if (c_type != LEX_SEMICOLON)
 				throw "semicolon expected";
 
@@ -226,14 +226,36 @@ void Parser::S() {
 		}
 		else
 			throw ") after while expected"; 
-		//после проверки на скобки вставляем место куда переходить при наличии break
-		stack <int> tmp_breaks = st_loop_breaks.top();
-		while (!tmp_breaks.empty()) {
-			int tmp_int;
-			from_st(tmp_breaks, tmp_int);
-			poliz[tmp_int] = Lex(POLIZ_LABEL, (int)poliz.size());
+		//РїРѕСЃР»Рµ РїСЂРѕРІРµСЂРєРё РЅР° СЃРєРѕР±РєРё РІСЃС‚Р°РІР»СЏРµРј РјРµСЃС‚Рѕ РєСѓРґР° РїРµСЂРµС…РѕРґРёС‚СЊ РїСЂРё РЅР°Р»РёС‡РёРё breakg
+		check_breaks();
+	}
+	else if (c_type == LEX_DO) {
+		st_loop_breaks.push(stack <int>());
+		pl0 = poliz.size();
+		gl();
+		S();
+		if (c_type == LEX_WHILE) {
+			gl();
+			if (c_type == LEX_LPAREN) {
+				gl();
+				AE();
+				eq_bool();
+				poliz.push_back(Lex(POLIZ_LABEL, pl0));
+				poliz.push_back(Lex(POLIZ_TGO));
+				if (c_type != LEX_RPAREN)
+					throw ") after while expected";
+				gl();
+				if (c_type != LEX_SEMICOLON)
+					throw "; after () in while expected";
+				gl();
+			}
+			else
+				throw "( after while expected";
 		}
-		st_loop_breaks.pop(); //loop_cnt--
+		else
+			throw "while after do expected";
+		//Р°РЅР°Р»РѕРіРёС‡РЅР°СЏ РїСЂРѕРІРµСЂРєР° СЃС‚РµРєР° Р±СЂРµР№РєРѕРІ, РєР°Рє Рё РІ while {}
+		check_breaks();
 	}
 	else if (c_type == LEX_BREAK) {
 		if (st_loop_breaks.empty())
@@ -245,7 +267,10 @@ void Parser::S() {
 		pl0 = poliz.size();
 		poliz.push_back(Lex());
 		poliz.push_back(Lex(POLIZ_GO));
-		st_loop_breaks.top().push(pl0); //положили в верхний стек адрес фейк ячейки с адресом перехода по брейку
+		st_loop_breaks.top().push(pl0); //РїРѕР»РѕР¶РёР»Рё РІ РІРµСЂС…РЅРёР№ СЃС‚РµРє Р°РґСЂРµСЃ С„РµР№Рє СЏС‡РµР№РєРё СЃ Р°РґСЂРµСЃРѕРј РїРµСЂРµС…РѕРґР° РїРѕ Р±СЂРµР№РєСѓ
+	}
+	else if (c_type == LEX_CASE) {
+		CASE();
 	}
 	else if (c_type == LEX_READ) {
 		gl();
@@ -277,7 +302,7 @@ void Parser::S() {
 		if (c_type == LEX_LPAREN) {
 			gl();
 			AE();
-			st_types.pop(); //не важно какой тип печатаем, поэтому без проверок вынимаем из стека тип
+			st_types.pop(); //РЅРµ РІР°Р¶РЅРѕ РєР°РєРѕР№ С‚РёРї РїРµС‡Р°С‚Р°РµРј, РїРѕСЌС‚РѕРјСѓ Р±РµР· РїСЂРѕРІРµСЂРѕРє РІС‹РЅРёРјР°РµРј РёР· СЃС‚РµРєР° С‚РёРї
 			poliz.push_back(Lex(LEX_WRITE));
 			while (c_type == LEX_COMMA) {
 				gl();
@@ -307,6 +332,105 @@ void Parser::S() {
 	else
 		throw "incorrect statement in S";
 };
+
+void Parser::CASE() {
+	variant_next = 0;
+	while(!st_variant_exit.empty()) //РѕС‡РёС‰Р°РµРј СЃС‚РµРєРё РїСЂРё РІС…РѕРґРµ
+		st_variant_exit.pop();
+	while (!st_variant_true.empty())
+		st_variant_true.pop();
+	const_values_set.clear();
+
+	gl();
+	if (c_type != LEX_LPAREN)
+		throw "( after case expected";
+	gl();
+	AE();
+	eq_int();//РїСЂРѕРІРµСЂРєР° РІС‹СЂР°Р¶РµРЅРёСЏ РЅР° С†РµР»РѕС‡РёСЃР»РµРЅРЅРѕСЃС‚СЊ РІ РѕРїРµСЂР°С‚РѕСЂРµ case
+	if (c_type != LEX_RPAREN)
+		throw ") after case expected";
+	gl();
+	if (c_type != LEX_OF)
+		throw "of after case expected";
+	gl();
+	VL();
+	if (c_type != LEX_END)
+		throw "end after case expected";
+	gl();
+	if (c_type != LEX_SEMICOLON)
+		throw "semicolon after end (in case) expected";
+
+	poliz.push_back(Lex(POLIZ_ERRCASE));
+	while (!st_variant_exit.empty()) { //РїСЂРѕСЃС‚Р°РІРёР»Рё Р·РЅР°С‡РµРЅРёРµ 41 РїРѕ Р°РґСЂРµСЃР°Рј 17, 38 РёР· РїСЂРёРјРµСЂР° РІ С‚РµС‚СЂР°РґРё
+		int exit_address = st_variant_exit.top();
+		poliz[exit_address] = Lex(POLIZ_LABEL, (int)poliz.size());
+		st_variant_exit.pop();
+	}
+	poliz.push_back(Lex(POLIZ_POP));
+
+	gl();
+}
+
+void Parser::VL() {
+	VR();
+	while (c_type != LEX_END) {
+		VR(); //СЃРїРёСЃРѕРє РІР°СЂРёР°РЅС‚РѕРІ Р·Р°РєРѕРЅС‡РёС‚СЃСЏ РїСЂРё РїРѕРїР°РґР°РЅРёРё РЅР° Р»РµРєСЃРµРјРјСѓ END
+	}
+}
+
+void Parser::VR() {
+	poliz.push_back(Lex(POLIZ_DUP));
+	C(); //РєРѕРЅСЃС‚Р°РЅС‚Р° РІ РїРѕР»РёР· РїРѕР»РѕР¶РёС‚СЃСЏ РІ РЎ
+	eq_int(); //РїСЂРѕРІРµСЂРєР° РєРѕРЅСЃС‚Р°РЅС‚С‹ РЅР° С†РµР»РѕС‡РёСЃР»РµРЅРЅРѕСЃС‚СЊ РІ РѕРїРµСЂР°С‚РѕСЂРµ case
+	int constant_value = poliz[poliz.size() - 1].get_value();
+	if (const_values_set.find(constant_value) == const_values_set.end()) //РїСЂРѕРІРµСЂРєР° РїРѕРІС‚РѕСЂСЏСЋС‰РёС…СЃСЏ РІР°СЂРёР°РЅС‚РѕРІ РІ case
+		const_values_set.insert(constant_value);
+	else
+		throw "duplicate in case";
+		
+	poliz.push_back(Lex(LEX_DOUBLEEQ));
+	st_variant_true.push((int)poliz.size()); //РїРѕР»РѕР¶РёР»Рё РІ СЃС‚РµРє Р°РґСЂРµСЃ СЏС‡РµР№РєРё РґР»СЏ РїРµСЂРµС…РѕРґР° РїРѕ case true
+	poliz.push_back(Lex());
+	poliz.push_back(Lex(POLIZ_TGO));
+
+	while (c_type == LEX_COMMA) {
+		gl();
+		poliz.push_back(Lex(POLIZ_DUP));
+		C();
+		eq_int();
+		int constant_value = poliz[poliz.size() - 1].get_value();
+		if (const_values_set.find(constant_value) == const_values_set.end()) //РїСЂРѕРІРµСЂРєР° РїРѕРІС‚РѕСЂСЏСЋС‰РёС…СЃСЏ РІР°СЂРёР°РЅС‚РѕРІ РІ case
+			const_values_set.insert(constant_value);
+		else
+			throw "duplicate in case";
+
+		poliz.push_back(Lex(LEX_DOUBLEEQ));
+		st_variant_true.push((int)poliz.size()); //РїРѕР»РѕР¶РёР»Рё РІ СЃС‚РµРє Р°РґСЂРµСЃ СЏС‡РµР№РєРё РґР»СЏ РїРµСЂРµС…РѕРґР° РїРѕ case true
+		poliz.push_back(Lex());
+		poliz.push_back(Lex(POLIZ_TGO));
+	}
+
+	variant_next = poliz.size(); //Р·Р°РїРѕРјРЅРёР»Рё Р°РґСЂРµСЃ 13(РґР»СЏ Р·РЅР°С‡РµРЅРёСЏ 19) РёР· РїСЂРёРјРµСЂР° РІ С‚РµС‚СЂР°РґРё
+	poliz.push_back(Lex());
+	poliz.push_back(Lex(POLIZ_GO));
+
+	if (c_type != LEX_COLON)
+		throw ": after case in VR expected";
+	gl();
+
+	while (!st_variant_true.empty()) { //Р·Р°РїРѕР»РЅРёР»Рё РІСЃРµ 15 РїРѕ Р°РґСЂРµСЃР°Рј 6 Рё 11 (РёР· РїСЂРёРјРµСЂР° РІ С‚РµС‚СЂР°РґРё)
+		int true_address = st_variant_true.top();
+		poliz[true_address] = Lex(POLIZ_LABEL, (int)poliz.size());
+		st_variant_true.pop();
+	}
+	S();
+
+	st_variant_exit.push((int)poliz.size()); //Р·Р°РїРѕРјРЅРёР»Рё РІ СЃС‚РµРє Р°РґСЂРµСЃ 17(РґР»СЏ Р·РЅР°С‡РµРЅРёСЏ 41) РёР· РїСЂРёРјРµСЂР° РІ С‚РµС‚СЂР°РґРё
+	poliz.push_back(Lex());
+	poliz.push_back(Lex(POLIZ_GO));
+
+	poliz[variant_next] = Lex(POLIZ_LABEL, (int)poliz.size()); //РїСЂРѕСЃС‚Р°РІРёР»Рё РІ Р°РґСЂРµСЃ 13 Р·РЅР°С‡РµРЅРёРµ 19 РёР· РїСЂРёРјРµСЂР° РІ С‚РµС‚СЂР°РґРё
+}
 
 void Parser::AE() {
 	E();
@@ -396,18 +520,18 @@ void Parser::F() {
 		F();
 		check_not();
 	}
-	//если унарный плюс, то пропускаем (все равно что его нет)
+	//РµСЃР»Рё СѓРЅР°СЂРЅС‹Р№ РїР»СЋСЃ, С‚Рѕ РїСЂРѕРїСѓСЃРєР°РµРј (РІСЃРµ СЂР°РІРЅРѕ С‡С‚Рѕ РµРіРѕ РЅРµС‚)
 	else if (c_type == LEX_PLUS) {
 		gl();
 		AE();
 	}
 	else if (c_type == LEX_MINUS) {
-		st_types.push(LEX_INT); //положили в стек операций тип нуля
-		st_types.push(LEX_MINUS); //положили в стек операций минус (-a -> 0-a)
+		st_types.push(LEX_INT); //РїРѕР»РѕР¶РёР»Рё РІ СЃС‚РµРє РѕРїРµСЂР°С†РёР№ С‚РёРї РЅСѓР»СЏ
+		st_types.push(LEX_MINUS); //РїРѕР»РѕР¶РёР»Рё РІ СЃС‚РµРє РѕРїРµСЂР°С†РёР№ РјРёРЅСѓСЃ (-a -> 0-a)
 		poliz.push_back(Lex(LEX_INT, 0));
 		gl();
 		F();
-		check_op(); //минус в полиз положится автоматически после проверки операции
+		check_op(); //РјРёРЅСѓСЃ РІ РїРѕР»РёР· РїРѕР»РѕР¶РёС‚СЃСЏ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё РїРѕСЃР»Рµ РїСЂРѕРІРµСЂРєРё РѕРїРµСЂР°С†РёРё
 	}
 	else if (c_type == LEX_LPAREN) {
 		gl();
@@ -429,10 +553,10 @@ void Parser::N() {};*/
 
 void Parser::dec(type_of_lex type) {
 	int i;
-	vector <Ident> *TID = scan.getTID(); //заносим информацию о типе переменной и информацию о ее наличии
+	vector <Ident> *TID = scan.getTID(); //Р·Р°РЅРѕСЃРёРј РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ С‚РёРїРµ РїРµСЂРµРјРµРЅРЅРѕР№ Рё РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РµРµ РЅР°Р»РёС‡РёРё
 	while (!st_idents.empty()) {
 		from_st(st_idents, i);
-		if ((*TID)[i].get_declare()) //проверяем, что переменная не инициализирована дважды
+		if ((*TID)[i].get_declare()) //РїСЂРѕРІРµСЂСЏРµРј, С‡С‚Рѕ РїРµСЂРµРјРµРЅРЅР°СЏ РЅРµ РёРЅРёС†РёР°Р»РёР·РёСЂРѕРІР°РЅР° РґРІР°Р¶РґС‹
 			throw "variable " + (*TID)[i].get_name() + " described twice";
 		else {
 			(*TID)[i].put_declare();
@@ -443,7 +567,7 @@ void Parser::dec(type_of_lex type) {
 
 void Parser::check_id() {
 	vector <Ident> *TID = scan.getTID();
-	if ((*TID)[c_val].get_declare()) //st_lex - стэк для выражений
+	if ((*TID)[c_val].get_declare()) //st_lex - СЃС‚СЌРє РґР»СЏ РІС‹СЂР°Р¶РµРЅРёР№
 		st_types.push((*TID)[c_val].get_type());
 	else throw "not declared";
 }
@@ -507,18 +631,25 @@ void Parser::eq_type() {
 
 void Parser::eq_type_v() {
 	type_of_lex t1, t2;
-	from_st(st_types, t1); //сравним два операнда между знаком равно (достанем и уберем первый элемент c помощью fromst)
+	from_st(st_types, t1); //СЃСЂР°РІРЅРёРј РґРІР° РѕРїРµСЂР°РЅРґР° РјРµР¶РґСѓ Р·РЅР°РєРѕРј СЂР°РІРЅРѕ (РґРѕСЃС‚Р°РЅРµРј Рё СѓР±РµСЂРµРј РїРµСЂРІС‹Р№ СЌР»РµРјРµРЅС‚ c РїРѕРјРѕС‰СЊСЋ fromst)
 	t2 = st_types.top();
-	if ((t1 == LEX_INT || t1 == LEX_REAL) && (t2 == LEX_INT || t2 == LEX_REAL)) {} //и сравним с тем что останется
+	if ((t1 == LEX_INT || t1 == LEX_REAL) && (t2 == LEX_INT || t2 == LEX_REAL)) {} //Рё СЃСЂР°РІРЅРёРј СЃ С‚РµРј С‡С‚Рѕ РѕСЃС‚Р°РЅРµС‚СЃСЏ
 	else if (t1 == t2) {}
 	else
 		throw "wrong types are in =";
-	//поскольку сравниваем не внутри S1, то последний pop не нужен
+	//РїРѕСЃРєРѕР»СЊРєСѓ СЃСЂР°РІРЅРёРІР°РµРј РЅРµ РІРЅСѓС‚СЂРё S1, С‚Рѕ РїРѕСЃР»РµРґРЅРёР№ pop РЅРµ РЅСѓР¶РµРЅ
 }
 
 void Parser::eq_bool() {
 	if (st_types.top() != LEX_BOOL)
 		throw "expression is not boolean";
+	else
+		st_types.pop();
+}
+
+void Parser::eq_int() {
+	if (st_types.top() != LEX_INT)
+		throw "expression or constant aren't int";
 	else
 		st_types.pop();
 }
@@ -530,4 +661,13 @@ void Parser::check_id_in_read() {
 		throw "not declared";
 }
 
-
+void Parser::check_breaks() {
+	//РїРѕСЃР»Рµ РїСЂРѕРІРµСЂРєРё РЅР° СЃРєРѕР±РєРё РІСЃС‚Р°РІР»СЏРµРј РјРµСЃС‚Рѕ РєСѓРґР° РїРµСЂРµС…РѕРґРёС‚СЊ РїСЂРё РЅР°Р»РёС‡РёРё breakg
+	stack <int> tmp_breaks = st_loop_breaks.top();
+	while (!tmp_breaks.empty()) {
+		int tmp_int;
+		from_st(tmp_breaks, tmp_int);
+		poliz[tmp_int] = Lex(POLIZ_LABEL, (int)poliz.size());
+	}
+	st_loop_breaks.pop(); //loop_cnt--
+}

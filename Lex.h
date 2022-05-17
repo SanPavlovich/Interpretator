@@ -11,19 +11,23 @@ enum type_of_lex {
 	LEX_AND, LEX_BEGIN, LEX_BOOL, LEX_DO, LEX_ELSE, LEX_END, LEX_IF,
 	LEX_FALSE, LEX_INT, LEX_NOT, LEX_OR,
 	LEX_PROGRAM, LEX_READ, LEX_THEN, LEX_TRUE,
-	LEX_VAR, LEX_WHILE, LEX_WRITE, LEX_STRING, LEX_REAL, LEX_BREAK, //
+	LEX_VAR, LEX_WHILE, LEX_WRITE, LEX_STRING, LEX_REAL, LEX_BREAK, LEX_CASE, LEX_OF,//
 	LEX_FIN,
 	LEX_SEMICOLON, LEX_AT, LEX_COMMA, LEX_COLON, LEX_ASSIGN, LEX_LPAREN,
 	LEX_RPAREN, LEX_EQ, LEX_LSS, LEX_GTR, LEX_PLUS,
 	LEX_MINUS, LEX_TIMES, LEX_SLASH, LEX_LEQ,
-	LEX_NEQ, LEX_GEQ, LEX_LFPAREN, LEX_RFPAREN, LEX_DOUBLEEQ, //������� {} ==
+	LEX_NEQ, LEX_GEQ, LEX_LFPAREN, LEX_RFPAREN, LEX_DOUBLEEQ, //добавил {} ==
 	//LEX_NUM,
 	LEX_ID,
 
 	POLIZ_LABEL,
 	POLIZ_GO,
 	POLIZ_FGO,
-	POLIZ_ADDRESS
+	POLIZ_TGO,
+	POLIZ_ADDRESS, 
+	POLIZ_DUP, //дублируем x на верх стека для операции сравнения: dup, 3, =
+	POLIZ_POP, //достаем продублированный x обратно в самом конце полиза
+	POLIZ_ERRCASE //ошибка, если ни один вариант из case не подошел
 };
 /* 
 NULL, "and", "begin", "bool", "do", "else", "end",
@@ -41,7 +45,7 @@ NULL, "and", "begin", "bool", "do", "else", "end",
 	// 8 9 10 11 12 13 14 15 16 17 18 19 20 21
 };*/
 
-//������� � enum � TD, TW ���������
+//порядок в enum и TD, TW совпадает
 
 class Lex {
 	type_of_lex t_lex;

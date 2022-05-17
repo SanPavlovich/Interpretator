@@ -13,7 +13,7 @@ void Executer::execute(vector<Lex>& poliz, vector <Ident>& TID) {
             args.push(pc_el);
             break;
 
-        case LEX_ID: //различные случаи при складывании значений в переменную на этапе интерпретации
+        case LEX_ID: //СЂР°Р·Р»РёС‡РЅС‹Рµ СЃР»СѓС‡Р°Рё РїСЂРё СЃРєР»Р°РґС‹РІР°РЅРёРё Р·РЅР°С‡РµРЅРёР№ РІ РїРµСЂРµРјРµРЅРЅСѓСЋ РЅР° СЌС‚Р°РїРµ РёРЅС‚РµСЂРїСЂРµС‚Р°С†РёРё
             i = pc_el.get_value();
             if (TID[i].get_assign()) {
                 if (TID[i].get_type() == LEX_STRING)
@@ -54,6 +54,25 @@ void Executer::execute(vector<Lex>& poliz, vector <Ident>& TID) {
             from_st(args, tmp_lex2);
             if (!tmp_lex2.get_value()) 
                 index = tmp_lex.get_value() - 1;
+            break;
+
+        case POLIZ_TGO:
+            from_st(args, tmp_lex);
+            from_st(args, tmp_lex2);
+            if (tmp_lex2.get_value())
+                index = tmp_lex.get_value() - 1;
+            break;
+
+        case POLIZ_DUP:
+            args.push(args.top());
+            break;
+
+        case POLIZ_POP:
+            args.pop();
+            break;
+
+        case POLIZ_ERRCASE:
+            throw "there are no suitable variants for case";
             break;
 
         case LEX_WRITE:
@@ -107,7 +126,7 @@ void Executer::execute(vector<Lex>& poliz, vector <Ident>& TID) {
         case LEX_PLUS:
             from_st(args, tmp_lex);
             from_st(args, tmp_lex2);
-            if (tmp_lex.get_type() == LEX_STRING) { //равенство типов 2 переменных проверится на семантическом анализе
+            if (tmp_lex.get_type() == LEX_STRING) { //СЂР°РІРµРЅСЃС‚РІРѕ С‚РёРїРѕРІ 2 РїРµСЂРµРјРµРЅРЅС‹С… РїСЂРѕРІРµСЂРёС‚СЃСЏ РЅР° СЃРµРјР°РЅС‚РёС‡РµСЃРєРѕРј Р°РЅР°Р»РёР·Рµ
                 args.push(Lex(LEX_STRING, tmp_lex2.get_str_value() + tmp_lex.get_str_value()));
             }
             else if (tmp_lex.get_type() == LEX_INT && tmp_lex2.get_type() == LEX_INT)
@@ -118,7 +137,7 @@ void Executer::execute(vector<Lex>& poliz, vector <Ident>& TID) {
                 args.push(Lex(LEX_REAL, tmp_lex2.get_real_value() + tmp_lex.get_value()));
             else if (tmp_lex.get_type() == LEX_REAL && tmp_lex2.get_type() == LEX_INT)
                 args.push(Lex(LEX_REAL, tmp_lex2.get_value() + tmp_lex.get_real_value()));
-            else //случай bool bool
+            else //СЃР»СѓС‡Р°Р№ bool bool
                 args.push(Lex(tmp_lex.get_type(), tmp_lex2.get_value() + tmp_lex.get_value()));
             break;
 
@@ -174,7 +193,7 @@ void Executer::execute(vector<Lex>& poliz, vector <Ident>& TID) {
                 args.push(Lex(LEX_BOOL, tmp_lex2.get_real_value() == tmp_lex.get_value()));
             else if (tmp_lex.get_type() == LEX_REAL && tmp_lex2.get_type() == LEX_INT)
                 args.push(Lex(LEX_BOOL, tmp_lex2.get_value() == tmp_lex.get_real_value()));
-            else if (tmp_lex.get_type() == LEX_STRING) { //равенство типов 2 переменных проверится на семантическом анализе
+            else if (tmp_lex.get_type() == LEX_STRING) { //СЂР°РІРµРЅСЃС‚РІРѕ С‚РёРїРѕРІ 2 РїРµСЂРµРјРµРЅРЅС‹С… РїСЂРѕРІРµСЂРёС‚СЃСЏ РЅР° СЃРµРјР°РЅС‚РёС‡РµСЃРєРѕРј Р°РЅР°Р»РёР·Рµ
                 args.push(Lex(LEX_BOOL, tmp_lex2.get_str_value() == tmp_lex.get_str_value()));
             }
             else
@@ -192,7 +211,7 @@ void Executer::execute(vector<Lex>& poliz, vector <Ident>& TID) {
                 args.push(Lex(LEX_BOOL, tmp_lex2.get_real_value() < tmp_lex.get_value()));
             else if (tmp_lex.get_type() == LEX_REAL && tmp_lex2.get_type() == LEX_INT)
                 args.push(Lex(LEX_BOOL, tmp_lex2.get_value() < tmp_lex.get_real_value()));
-            else if (tmp_lex.get_type() == LEX_STRING) { //равенство типов 2 переменных проверится на семантическом анализе
+            else if (tmp_lex.get_type() == LEX_STRING) { //СЂР°РІРµРЅСЃС‚РІРѕ С‚РёРїРѕРІ 2 РїРµСЂРµРјРµРЅРЅС‹С… РїСЂРѕРІРµСЂРёС‚СЃСЏ РЅР° СЃРµРјР°РЅС‚РёС‡РµСЃРєРѕРј Р°РЅР°Р»РёР·Рµ
                 args.push(Lex(LEX_BOOL, tmp_lex2.get_str_value() < tmp_lex.get_str_value()));
             }
             else
@@ -210,7 +229,7 @@ void Executer::execute(vector<Lex>& poliz, vector <Ident>& TID) {
                 args.push(Lex(LEX_BOOL, tmp_lex2.get_real_value() > tmp_lex.get_value()));
             else if (tmp_lex.get_type() == LEX_REAL && tmp_lex2.get_type() == LEX_INT)
                 args.push(Lex(LEX_BOOL, tmp_lex2.get_value() > tmp_lex.get_real_value()));
-            else if (tmp_lex.get_type() == LEX_STRING) { //равенство типов 2 переменных проверится на семантическом анализе
+            else if (tmp_lex.get_type() == LEX_STRING) { //СЂР°РІРµРЅСЃС‚РІРѕ С‚РёРїРѕРІ 2 РїРµСЂРµРјРµРЅРЅС‹С… РїСЂРѕРІРµСЂРёС‚СЃСЏ РЅР° СЃРµРјР°РЅС‚РёС‡РµСЃРєРѕРј Р°РЅР°Р»РёР·Рµ
                 args.push(Lex(LEX_BOOL, tmp_lex2.get_str_value() > tmp_lex.get_str_value()));
             }
             else
@@ -228,7 +247,7 @@ void Executer::execute(vector<Lex>& poliz, vector <Ident>& TID) {
                 args.push(Lex(LEX_BOOL, tmp_lex2.get_real_value() <= tmp_lex.get_value()));
             else if (tmp_lex.get_type() == LEX_REAL && tmp_lex2.get_type() == LEX_INT)
                 args.push(Lex(LEX_BOOL, tmp_lex2.get_value() <= tmp_lex.get_real_value()));
-            else if (tmp_lex.get_type() == LEX_STRING) { //равенство типов 2 переменных проверится на семантическом анализе
+            else if (tmp_lex.get_type() == LEX_STRING) { //СЂР°РІРµРЅСЃС‚РІРѕ С‚РёРїРѕРІ 2 РїРµСЂРµРјРµРЅРЅС‹С… РїСЂРѕРІРµСЂРёС‚СЃСЏ РЅР° СЃРµРјР°РЅС‚РёС‡РµСЃРєРѕРј Р°РЅР°Р»РёР·Рµ
                 args.push(Lex(LEX_BOOL, tmp_lex2.get_str_value() <= tmp_lex.get_str_value()));
             }
             else
@@ -246,7 +265,7 @@ void Executer::execute(vector<Lex>& poliz, vector <Ident>& TID) {
                 args.push(Lex(LEX_BOOL, tmp_lex2.get_real_value() >= tmp_lex.get_value()));
             else if (tmp_lex.get_type() == LEX_REAL && tmp_lex2.get_type() == LEX_INT)
                 args.push(Lex(LEX_BOOL, tmp_lex2.get_value() >= tmp_lex.get_real_value()));
-            else if (tmp_lex.get_type() == LEX_STRING) { //равенство типов 2 переменных проверится на семантическом анализе
+            else if (tmp_lex.get_type() == LEX_STRING) { //СЂР°РІРµРЅСЃС‚РІРѕ С‚РёРїРѕРІ 2 РїРµСЂРµРјРµРЅРЅС‹С… РїСЂРѕРІРµСЂРёС‚СЃСЏ РЅР° СЃРµРјР°РЅС‚РёС‡РµСЃРєРѕРј Р°РЅР°Р»РёР·Рµ
                 args.push(Lex(LEX_BOOL, tmp_lex2.get_str_value() >= tmp_lex.get_str_value()));
             }
             else
@@ -264,7 +283,7 @@ void Executer::execute(vector<Lex>& poliz, vector <Ident>& TID) {
                 args.push(Lex(LEX_BOOL, tmp_lex2.get_real_value() != tmp_lex.get_value()));
             else if (tmp_lex.get_type() == LEX_REAL && tmp_lex2.get_type() == LEX_INT)
                 args.push(Lex(LEX_BOOL, tmp_lex2.get_value() != tmp_lex.get_real_value()));
-            else if (tmp_lex.get_type() == LEX_STRING) { //равенство типов 2 переменных проверится на семантическом анализе
+            else if (tmp_lex.get_type() == LEX_STRING) { //СЂР°РІРµРЅСЃС‚РІРѕ С‚РёРїРѕРІ 2 РїРµСЂРµРјРµРЅРЅС‹С… РїСЂРѕРІРµСЂРёС‚СЃСЏ РЅР° СЃРµРјР°РЅС‚РёС‡РµСЃРєРѕРј Р°РЅР°Р»РёР·Рµ
                 args.push(Lex(LEX_BOOL, tmp_lex2.get_str_value() != tmp_lex.get_str_value()));
             }
             else
@@ -286,7 +305,7 @@ void Executer::execute(vector<Lex>& poliz, vector <Ident>& TID) {
                 TID[j].put_value((int)tmp_lex.get_real_value());
             else if (TID[j].get_type() == LEX_REAL && tmp_lex.get_type() == LEX_INT)
                 TID[j].put_real_value((float)tmp_lex.get_value());
-            else //для случая bool = bool
+            else //РґР»СЏ СЃР»СѓС‡Р°СЏ bool = bool
                 TID[j].put_value(i);
             TID[j].put_assign();
             break;
